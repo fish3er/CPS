@@ -40,6 +40,18 @@ def mycorrelation1(x, y):
 
     return result
 
+def mycorrelation2(x, y):
+    len_x = len(x)
+    len_y = len(y)
+    correlation = np.zeros(len_x + len_y - 1)
+
+    for k in range(len_x + len_y - 1):
+        sum_val = 0
+        for l in range(max(0, k + 1 - len_y), min(k + 1, len_x)):
+            sum_val += x[l] * y[k - l]
+        correlation[k] = sum_val
+
+    return correlation
 
 # Wczytanie pliku .mat
 mat = scipy.io.loadmat("adsl_x.mat") # wczytanie plików danych z matlab
@@ -51,7 +63,7 @@ K = 4    # ilosc blokow
 
 for i in range(K): # ilość ramek
     prefix = x[(i+1)*N - M:(i+1)*N]
-    #correlation = mycorrelation1(x, prefix)
+    #correlation = mycorrelation2(x, prefix)
     correlation = np.correlate(x, prefix, 'full')
     pocz_pref = find_peaks(correlation, np.max(correlation))
     pocz_pref_x = pocz_pref[0] - M +1 #numeracja do 1 do 2049
