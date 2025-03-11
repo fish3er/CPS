@@ -28,7 +28,7 @@ M = 32   # prefix
 N = 512  # ramka
 K = 4    # ilosc blokow
 
-for i in range(K):
+for i in range(K): # ilość ramek
     prefix = x[(i+1)*N - M:(i+1)*N]
     correlation = np.correlate(x, prefix, 'full')
     pocz_pref = find_peaks(correlation, np.max(correlation))
