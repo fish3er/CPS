@@ -3,22 +3,43 @@ import scipy.io
 from scipy.signal import find_peaks
 
 
-def mycorrelation(x,y):
+def mycorrelation(x, y):
     X = len(x)
     Y = len(y)
     result_length = X + Y - 1
     r_xy = np.zeros(result_length)
-    i=0#  0 do X + Y -2
-    for m in range(-(X - 1), Y): # pętla po wektorze "wynikowym"
-        # Ustalenie indeksów, dla których oba sygnały są zdefiniowane,
-        n_start = max(0, -m) # początek dopasowanie sygnałów
-        n_end = min(X, M - m) # koniec dopasowanie sygnałow
-        # Sumujemy iloczyny dla przesunięcia m
-        for n in range(n_start, n_end): # pętrla po elementach dopasowania
-            r_xy[i] += x[n] * y[n + m] # suma wpisana  w podpowiedzni elemeny wynikowego wektora
-        i+=1
+    i=0
+    for m in range(-(X - 1), Y):
+        # Ustalenie indeksów, dla których oba sygnały są zdefiniowane
+        n_start = max(0, -m)  # Początek dopasowania sygnałów
+        n_end = min(X, Y - m)  # Koniec dopasowania sygnałów
 
+        # Sumujemy iloczyny dla przesunięcia m
+        for n in range(n_start, n_end-1):
+            r_xy[i] += x[n] * y[n + m]  # Suma iloczynów sygnałów
+        i+=1
     return r_xy
+
+def mycorrelation1(x, y):
+
+    # Zamiana, jeśli x jest krótszy niż y
+    if len(x) < len(y):
+        x, y = y, x
+
+    n = len(x)
+    m = len(y)
+    result = []
+
+    # Przesuwamy wektor y od początku wektora x do momentu, gdy y mieści się w x
+    for i in range(n - m + 1):
+        suma = 0
+        # Dla każdego przesunięcia obliczamy sumę iloczynów odpowiadających elementów
+        for j in range(m):
+            suma += x[i + j] * y[j]
+        result.append(suma)
+
+    return result
+
 
 # Wczytanie pliku .mat
 mat = scipy.io.loadmat("adsl_x.mat") # wczytanie plików danych z matlab
@@ -30,6 +51,7 @@ K = 4    # ilosc blokow
 
 for i in range(K): # ilość ramek
     prefix = x[(i+1)*N - M:(i+1)*N]
+    #correlation = mycorrelation1(x, prefix)
     correlation = np.correlate(x, prefix, 'full')
     pocz_pref = find_peaks(correlation, np.max(correlation))
     pocz_pref_x = pocz_pref[0] - M +1 #numeracja do 1 do 2049
