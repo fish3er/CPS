@@ -33,3 +33,5 @@ plt.xlabel("Czas [s]")
 plt.ylabel("Amplituda")
 plt.grid(True)
 plt.show()
+
+

@@ -61,22 +61,23 @@ M = 32   # prefix
 N = 512  # ramka
 K = 4    # ilosc blokow
 
-# for i in range(K): # ilość ramek
-#     prefix = x[(i+1)*N - M:(i+1)*N]
-#     #correlation = mycorrelation2(x, prefix)
-#     correlation = np.correlate(x, prefix, 'full')
-#     pocz_pref = find_peaks(correlation, np.max(correlation))
-#     pocz_pref_x = pocz_pref[0] - M +1 #numeracja do 1 do 2049
-#     print(pocz_pref_x)
-total_length = M + N * K  # Całkowita długość całego bloku danych
+for i in range(K): # ilość ramek
+    prefix = x[(i+1)*N - M:(i+1)*N]
+    correlation = mycorrelation(x, prefix)
+    #correlation = np.correlate(x, prefix, 'full')
+    pocz_pref = find_peaks(correlation, np.max(correlation))
+    pocz_pref_x = pocz_pref[0] - M  #numeracja do 1 do 2049
+    print(pocz_pref_x)
 
-# Lista na indeksy początków ramek
-frame_starts = []
 
-# Iteracja po danych, aby znaleźć początek każdej ramki
-for j in range(M, len(x), N):
-    if j + N <= len(x):  # Upewniamy się, że ramka mieści się w danych
-        frame_starts.append(j)
 
-# Wypisanie indeksów początków ramek
-print("Indeksy początków ramek:", frame_starts)
+# total_length = M + N * K  # Całkowita długość całego bloku danych
+# # Lista na indeksy początków ramek
+# frame_starts = []
+# # Iteracja po danych, aby znaleźć początek każdej ramki
+# for j in range(M, len(x), N):
+#     if j + N <= len(x):  # Upewniamy się, że ramka mieści się w danych
+#         frame_starts.append(j)
+#
+# # Wypisanie indeksów początków ramek
+# print("Indeksy początków ramek:", frame_starts)
