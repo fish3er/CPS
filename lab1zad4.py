@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 
 #Mateusz = [77,97,116,101,117,115,122]
 fpr = 16000  # Częstotliwość próbkowania 16 kHz
-T = 0.1  # Czas transmisji bitu w sekundach (100 ms)
-fc = 5  # Częstotliwość sinusoidy 500 Hz
+T = 0.1  # Czas transmisji bitu w sekundach
+fc = 5  # Częstotliwość sinusoidy
 #1600 próbek bit
 #asci_name= [77,97,116,101,117,115,122]
 asci_name=[77]
