@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.io
+from matplotlib import pyplot as plt
 from scipy.signal import find_peaks
 
 
@@ -59,25 +60,48 @@ x = mat["x"].flatten()  # pobranie danych zmiennej x z pliku .mat, i konwersja n
 # same dante mat["x"] to tablica tablic
 M = 32   # prefix
 N = 512  # ramka
-K = 4    # ilosc blokow
-
-for i in range(K): # ilość ramek
-    prefix = x[(i+1)*N - M:(i+1)*N]
-    correlation = mycorrelation(x, prefix)
-    #correlation = np.correlate(x, prefix, 'full')
-    pocz_pref = find_peaks(correlation, np.max(correlation))
-    pocz_pref_x = pocz_pref[0] - M  #numeracja do 1 do 2049
-    print(pocz_pref_x)
+K=4
 
 
+bestPrefix = list()
+bestScore = list()
+prefixPoz = list()
+y = 0
 
-# total_length = M + N * K  # Całkowita długość całego bloku danych
-# # Lista na indeksy początków ramek
-# frame_starts = []
-# # Iteracja po danych, aby znaleźć początek każdej ramki
-# for j in range(M, len(x), N):
-#     if j + N <= len(x):  # Upewniamy się, że ramka mieści się w danych
-#         frame_starts.append(j)
-#
-# # Wypisanie indeksów początków ramek
-# print("Indeksy początków ramek:", frame_starts)
+# Dla gotowej funkcji
+for i in range(len(x)):
+    # iterowanie od 0
+    prefix = x[i:i + M]
+    correlation = np.correlate(x, prefix, 'full')
+    y = max(correlation)
+    z = np.where(correlation == y)[0]
+    if len(z) >= 2:
+        bestPrefix.append(prefix)
+        bestScore.append(correlation)
+        prefixPoz.append(i)
+
+for i in range(len(bestScore)):
+    plt.plot(bestScore[i])
+    plt.show()
+print(bestPrefix)
+print(y)
+print(prefixPoz)
+
+# Dla gotowej funkcji
+for i in range(len(x)):
+    # iterowanie od 0
+    prefix = x[i:i + M]
+    correlation = correlation(x, prefix)
+    y = max(correlation)
+    z = np.where(correlation == y)[0]
+    if len(z) >= 2:
+        bestPrefix.append(prefix)
+        bestScore.append(correlation)
+        prefixPoz.append(i)
+
+for i in range(len(bestScore)):
+    plt.plot(bestScore[i])
+    plt.show()
+print(bestPrefix)
+print(y)
+print(prefixPoz)
