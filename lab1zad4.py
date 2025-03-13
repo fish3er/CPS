@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 
 
 #Mateusz = [77,97,116,101,117,115,122]
-fpr = 16000  # Częstotliwość próbkowania 16 kHz
+fpr = 16000
+#  8000 16000 32000 48000
+# Częstotliwość próbkowania 16 kHz
 T = 0.1  # Czas transmisji bitu w sekundach
 fc = 5  # Częstotliwość sinusoidy
 #1600 próbek bit
