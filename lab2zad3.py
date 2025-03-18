@@ -5,26 +5,54 @@ N = 100
 fs = 1000
 f = [50, 100, 150]
 ampl = [50, 100, 150]
+t= np.linspace(0, N/fs, N)
+sig = ampl[0]*np.sin(2*np.pi*f[0]*t)+ ampl[1]*np.sin(2*np.pi*f[1]*t) +ampl[2]*np.sin(2*np.pi*f[2]*t)
+plt.figure()
+plt.plot(t,sig)
+plt.show()
 
-def generate_signal(numb, fnumb, frq, amp): # numb - ilość próbek ; fnumb - czest próbkowania ; freq - czest syg; amp - ampl
-    t = np.arange(numb) / fnumb
-    sig = sum(amp * np.sin(2 * np.pi * frq * t))
-    return sig
-
+#macierz A=dct
 A = np.zeros((N, N))
+
 for k in range(N):
     for n in range(N):
-        scale = np.sqrt(1/N) if k == 0 else np.sqrt(2/N)
+        scale = np.sqrt(1 / N) if k == 0 else np.sqrt(2 / N)
         A[k, n] = scale * np.cos((np.pi * k * (n + 0.5)) / N)
-S = np.linalg.inv(A)
+# S= idct
+S= np.linalg.inv(A)
 
-for j in range(len(ampl)):
-    generate_signal(N, fs, f[j], ampl[j])
-    for i in range(N):
-        plt.figure()
-        plt.plot(A[i, :], label=f'Wiersz {i} macierzy A')
-        plt.plot(S[:, i], label=f'Kolumna {i} macierzy S', linestyle='dashed')
-        plt.legend()
-        plt.title(f'Wiersz {i} macierzy A i kolumna {i} macierzy S')
-        plt.show()
-        input("Naciśnij Enter, aby kontynuować...")
+# for i in range(N):
+#     plt.figure()
+#     plt.plot(t,S[:,i], label=f'kolumnaa {i} S')
+#     plt.plot(t,A[i], label=f'Wiersz {i} A', linestyle='--')
+#     plt.title(f'Wiersz {i} A; kolumnaa {i} S')
+#     plt.legend()
+#     plt.show()
+
+
+#analiza syg
+y = A @ sig
+# skala czestotilowasci
+fscale = (np.arange(N)* fs )/ (2 *N )
+# wykres DCT
+plt.figure()
+plt.plot(fscale, y)
+plt.xlabel('f')
+plt.ylabel('amplitude')
+plt.show()
+
+# rec syg
+sig_rec= S @ y
+print("rec poparwna?", np.allclose(sig, sig_rec))
+err=[]
+for n in range(N):
+    err.append(sig[n]-sig_rec[n])
+print("avg err", np.mean(err))
+plt.figure()
+plt.stem(fscale, np.abs(err))
+plt.show()
+
+
+
+
+
