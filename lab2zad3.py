@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-
+np.set_printoptions(precision=8, suppress=True)
 N = 100
 fs = 1000
 f = [50, 100, 150]
@@ -47,7 +47,7 @@ print("rec poparwna?", np.allclose(sig, sig_rec))
 err=[]
 for n in range(N):
     err.append(sig[n]-sig_rec[n])
-print("avg err", np.mean(err))
+print("avg err",np.mean(err))
 plt.figure()
 plt.stem(fscale, np.abs(err))
 plt.show()
