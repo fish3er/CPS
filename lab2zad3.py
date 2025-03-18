@@ -36,7 +36,7 @@ y = A @ sig
 fscale = (np.arange(N)* fs )/ (2 *N )
 # wykres DCT
 plt.figure()
-plt.plot(fscale, y)
+plt.stem(fscale, y)
 plt.xlabel('f')
 plt.ylabel('amplitude')
 plt.show()
