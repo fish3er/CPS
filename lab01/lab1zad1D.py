@@ -8,14 +8,18 @@ fn = 50     # nośna
 fm = 1      # modulująca
 df = 5      # głebokość mod
 T = 1
-time_cons=np.linspace(0,T,int(T*fs))
-time_sample=np.linspace(0,T,int(T*25)) # 25 próbek na sec
+time_cons=np.linspace(0,T,int(T*fs),endpoint=False)
+time_sample=np.linspace(0,T,int(T*25),endpoint=False) # 25 próbek na sec
 
 #sygnały
 mod_sig=df*np.sin(2*np.pi*time_cons*fm) # modulujacy
+mod_sig =np.round(mod_sig,8)
 carr_sig=np.sin(2*np.pi*time_cons*fn) #nośny
+carr_sig =np.round(carr_sig,8)
 sig=np.sin(2*np.pi*(fn+mod_sig)*time_cons) # sygnał zmodulowany
+sig=np.round(sig,8)
 n_sig=np.sin(2*np.pi*fn*time_cons)
+n_sig=np.round(n_sig,8)
 plt.plot(time_cons, mod_sig, label='Sygnał modulujący', color='blue', linestyle='--')
 plt.plot(time_cons, sig, label='Sygnał zmodulowany (SFM)', color='green', linestyle='-')
 #plt.plot(time_cons,n_sig,label='Signał bez mod', color='red', linestyle='--')

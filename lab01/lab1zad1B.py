@@ -11,16 +11,20 @@ fs3=50
 fs4=49
 
 
-t1= np.linspace(0,T,int(T*fs1))
-t2= np.linspace(0,T,int(T*fs2))
-t3= np.linspace(0,T,int(T*fs3))
-t4= np.linspace(0,T,int(T*fs4))
+t1= np.linspace(0,T,int(T*fs1),endpoint=False)
+t2= np.linspace(0,T,int(T*fs2),endpoint=False)
+t3= np.linspace(0,T,int(T*fs3),endpoint=False)
+t4= np.linspace(0,T,int(T*fs4),endpoint=False)
 
 #wartości sin
 y1 = ampl * np.sin(2 * np.pi * df * t1)
+y1=np.round(y1,8)
 y2 = ampl * np.sin(2 * np.pi * df * t2)
+y2=np.round(y2,8)
 y3 = ampl * np.sin(2 * np.pi * df * t3)
+y3=np.round(y3,8)
 y4= ampl * np.sin(2 * np.pi * df * t4)
+y4=np.round(y4,8)
 # wyświtlanie
 plt.plot(t1, y1, 'b-', label='10 kHz (pseudo analog)')
 plt.plot(t2, y2, 'g-o', label='51 Hz')

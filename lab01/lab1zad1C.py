@@ -3,11 +3,12 @@ import matplotlib.pyplot as plt
 
 fs=100
 T=1
-time= np.linspace(0, T, T*fs)
+time= np.linspace(0, T, T*fs,endpoint=False)
 sinus=[]
 for i in range(61):
     f= i * 5 #częstotliwość    print(f)
     y=np.sin(2 * np.pi * f * time)
+    y= np.round(y, 8)
     sinus.append(y)
     plt.plot(time, y, 'b-', label='f = %.0f' % f)
     plt.title(f"{f}Hz, {i}")
