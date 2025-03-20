@@ -9,10 +9,10 @@ for k in range(N):
 
 S=A.transpose()
 
-X= np.random.randn(N, N)
-X.transpose()
+X= np.random.randn(N,N)
+X=X.transpose() #??
 X_= A @ X
-Xrec= S@X_
+Xrec= S @ X_
 
 err_rec = np.linalg.norm(Xrec - X)
 
