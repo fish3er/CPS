@@ -27,7 +27,7 @@ fq=np.linspace(0,1000,4001, endpoint=True)
 x3=[]
 k=0
 for freq in fq:
-   x3.append(x_app * np.exp(-2j*np.pi*freq*t_app))
+   x3.append( np.sum( x_app * np.exp(-2j*np.pi*freq*t_app)))
 
 
 
@@ -46,7 +46,7 @@ plt.title('X2')
 plt.show()
 
 print(np.real(x2))
-plt.stem(freq1, np.real(x3))
+plt.stem(freq, np.real(x3))
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('Część rzeczywista')
 plt.title('X3')
