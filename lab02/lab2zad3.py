@@ -52,8 +52,3 @@ print("avg err",np.mean(err))
 plt.figure()
 plt.stem(fscale, np.abs(err))
 plt.show()
-
-
-
-
-
