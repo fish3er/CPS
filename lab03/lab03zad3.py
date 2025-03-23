@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.signal.windows import chebwin
 
 N=100 # ilosć próbek
 A1=1
@@ -20,7 +21,7 @@ plt.show()
 x_DfFT=[]
 for f in f_DtFt:
    x_DfFT.append( np.sum( x * np.exp(-2j*np.pi*f*t)))
-# widmo ?
+# widmo fft
 freq = np.arange(N) * fs / (N)
 x2= np.fft.fft(x)/(N)
 plt.stem(freq, np.real(x2))
@@ -28,9 +29,29 @@ plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('Część rzeczywista')
 plt.title('FFT Sygnału X2')
 plt.show()
-# widmo sygnału
+# widmo DtFT
 plt.plot(f_DtFt, np.real(x_DfFT))
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('Część rzeczywista')
 plt.title('DTFT Sygnału X3')
+plt.show()
+#     "Rectangular": np.ones(N),
+#     "Hamming": np.hamming(N),
+#     "Blackman": np.blackman(N),
+#     "Chebyshev 100 dB": chebwin(N, at=100),
+#     "Chebyshev 120 dB": chebwin(N, at=120)
+w= np.hamming(N)
+x_w=x*w # mnożenie przez okno
+# plt.plot(t,x_w)
+# plt.show()
+#DfTF dla okna
+x_DfFT_w=[]
+for f in f_DtFt:
+   x_DfFT_w.append( np.sum( x_w * np.exp(-2j*np.pi*f*t)))
+
+plt.plot(f_DtFt, np.real(x_DfFT_w))
+plt.xlabel("Częstotliwość [Hz]")
+plt.ylabel("Moduł DTFT")
+plt.title("Widmo DTFT dla okna ")
+plt.grid()
 plt.show()
