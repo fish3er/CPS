@@ -23,9 +23,9 @@ x2= np.fft.fft(x_app)/(N+M)
 # DtFT wzór
 t_app = np.linspace(0,N/fs,N+M,endpoint=False)
 fq=1000 # 0:0.25:1000
-fq=np.linspace(0,1000,4001, endpoint=True)
+fq=np.linspace(0,1000,4*fq+1, endpoint=True)
 x3=[]
-k=0
+
 for freq in fq:
    x3.append( np.sum( x_app * np.exp(-2j*np.pi*freq*t_app)))
 
@@ -33,21 +33,59 @@ for freq in fq:
 
 freq = np.arange(N+M) * fs / (N+M)
 freq1= np.arange(N) *fs /N
-plt.stem(freq1, np.real(x))
-plt.xlabel('Częstotliwość [Hz]')
-plt.ylabel('Część rzeczywista')
-plt.title('X')
-plt.show()
+# Wizualizacja
+plt.figure()
 
+plt.subplot(3, 1, 1)
+plt.plot(t,x)
+plt.xlabel('Czas [s]')
+plt.ylabel('Amplituda sygnału')
+plt.title('Oryginalny Sygnał X')
+
+plt.subplot(3, 1, 2)
 plt.stem(freq, np.real(x2))
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('Część rzeczywista')
-plt.title('X2')
-plt.show()
+plt.title('FFT Sygnału X2')
 
-print(np.real(x2))
-plt.stem(freq, np.real(x3))
+plt.subplot(3, 1, 3)
+plt.plot(fq, np.real(x3))
 plt.xlabel('Częstotliwość [Hz]')
 plt.ylabel('Część rzeczywista')
-plt.title('X3')
+plt.title('DTFT Sygnału X3')
+
+plt.tight_layout()
+plt.show()
+
+# DtFT wzór dla fa:-2000:0,25:2000
+t_app = np.linspace(0,N/fs,N+M,endpoint=False)
+fq1=2000 # -2000:0.25:2000
+fq1=np.linspace(-fq1,fq1,4*fq1+1, endpoint=True)
+x3_1=[]
+k=0
+for freq in fq1:
+   x3_1.append( np.sum( x_app * np.exp(-2j*np.pi*freq*t_app)))
+
+freq_2 = np.arange(N+M) * fs / (N+M)
+freq1_2= np.arange(N) *fs /N
+plt.figure()
+plt.subplot(3, 1, 1)
+plt.plot(t,x)
+plt.xlabel('Czas [s]')
+plt.ylabel('Amplituda sygnału')
+plt.title('Oryginalny Sygnał X')
+
+plt.subplot(3, 1, 2)
+plt.stem(freq_2, np.real(x2))
+plt.xlabel('Częstotliwość [Hz]')
+plt.ylabel('Część rzeczywista')
+plt.title('FFT Sygnału X2')
+
+plt.subplot(3, 1, 3)
+plt.plot(fq1, np.real(x3_1))
+plt.xlabel('Częstotliwość [Hz]')
+plt.ylabel('Część rzeczywista')
+plt.title('DTFT Sygnału X3')
+
+plt.tight_layout()
 plt.show()

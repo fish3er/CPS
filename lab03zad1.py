@@ -13,7 +13,7 @@ phi2=-np.pi/11
 t = np.linspace(0,N/fs,N,endpoint=False)  # wektor czasowy
 x = A1 * np.cos(2 * np.pi * f1 * t + phi1) + A2 * np.cos(2 * np.pi * f2 * t + phi2)  # sygnał
 # A macierz DFT - dyskretnej transformaty Fouriera dla sygnału próbkowanego -> dyskretnego
-A = np.zeros((N, N))
+A = np.zeros((N, N), dtype=np.complex128)
 for k in range(N):
     for n in range(N):
         A[k, n] = np.exp(-2j*np.pi*k*n/N) / np.sqrt(N)
