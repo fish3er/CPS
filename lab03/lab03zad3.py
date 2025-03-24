@@ -49,7 +49,7 @@ x_DfFT_w=[]
 for f in f_DtFt:
    x_DfFT_w.append( np.sum( x_w * np.exp(-2j*np.pi*f*t)))
 
-plt.plot(f_DtFt, np.real(x_DfFT_w))
+plt.plot(f_DtFt, 20*np.log10(np.abs(x_DfFT_w)))
 plt.xlabel("Częstotliwość [Hz]")
 plt.ylabel("Moduł DTFT")
 plt.title("Widmo DTFT dla okna ")
