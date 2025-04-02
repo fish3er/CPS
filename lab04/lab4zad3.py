@@ -1,7 +1,7 @@
 import time
 
 import numpy as np
-
+# pętla jest w złym miejscu i dlatego jest zły czas
 N=1024
 x_r = np.random.normal(size=N)
 x_i = np.random.normal(size=N)
