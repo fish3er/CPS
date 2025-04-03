@@ -6,10 +6,11 @@ N=1024
 x_r = np.random.normal(size=N)
 x_i = np.random.normal(size=N)
 
-start_time = time.time()
+# start_time = time.time()
 y = np.array(x_r) + np.array(x_i) *1j
 y = np.fft.fft(y)
 #podział
+start_time = time.time()
 y_r = np.real(y)
 y_i = np.imag(y)
 
