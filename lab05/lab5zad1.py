@@ -14,7 +14,7 @@ den = np.poly(pos) # bieguny
 H = sig.TransferFunction(num, den) # dziedzi
 
 
-w = np.linspace(1, 100, 1000)  # Zakres częstotliwości
+w = np.linspace(1, 30, 1000)  # Zakres częstotliwości
 w, h = sig.freqresp(H, w) # oblicza odpowiedź częstotliwościową układu dla wartości częstotliwości
 # h to H(jw)
 # alpltuda liniowa
