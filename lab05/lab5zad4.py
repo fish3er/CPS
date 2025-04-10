@@ -12,16 +12,16 @@ f1, f2 = 10, 100
 Rp = 3
 Rs = 100
 
-# # Chebyshev I  k - sys gain fukjci transferowej filtra  z - zera  p - bieguny b,a - wektory
-# z, p, k = signal.cheb1ap(N, Rp)  # Analog prototype
-# b, a = signal.zpk2tf(z, p, k)
+# Chebyshev I  k - sys gain fukjci transferowej filtra  z - zera  p - bieguny b,a - wektory
+z, p, k = signal.cheb1ap(N, Rp)  # Analog prototype
+b, a = signal.zpk2tf(z, p, k)
 
 # # Chebyshev I
 # z, p, k = signal.cheb2ap(N, Rp)  # Analog prototype
 # b, a = signal.zpk2tf(z, p, k)
-# Butterworth
-z, p, k = signal.buttap(N)  # Analog prototype
-b, a = signal.zpk2tf(z, p, k)
+# # Butterworth
+# z, p, k = signal.buttap(N)  # Analog prototype
+# b, a = signal.zpk2tf(z, p, k)
 
 #częstotliwościowa
 f = np.arange(0, 1000.01, 0.01)
