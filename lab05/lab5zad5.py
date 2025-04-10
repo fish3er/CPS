@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.signal import buttord, butter, freqresp
 
-def filtr(f_pass, f_stop, f_center, title):
+def filtr(f_pass, f_stop, f_center, N, title):
     wp = [(f_center - f_pass) * 2 * np.pi, (f_center + f_pass) * 2 * np.pi]
     ws = [(f_center - f_stop) * 2 * np.pi, (f_center + f_stop) * 2 * np.pi]
     gpass = 3; gstop = 40
@@ -10,9 +10,9 @@ def filtr(f_pass, f_stop, f_center, title):
     print(f"{title}: Rząd filtru: {n}")
 
     # projektowanie
-    b, a = butter(n, wn, btype='band', analog=True)
+    b, a = butter(N, wn, btype='band', analog=True)
 
-    f = np.linspace(f_center - 2e6, f_center + 2e6, 10000)
+    f = np.linspace(f_center - 4e6, f_center + 4e6, 10000)
     w = 2 * np.pi * f
     w, h = freqresp((b, a), w)
 
@@ -35,7 +35,7 @@ def filtr(f_pass, f_stop, f_center, title):
 f_center = 96e6
 
 #testowy
-filtr(f_pass=1e6, f_stop=2e6, f_center=f_center, title='Testowy filtr: 96 MHz ±1 MHz')
+filtr(f_pass=1e6, f_stop=3e6, f_center=f_center, N=4, title='Testowy filtr: 96 MHz ±1 MHz')
 
 # docelowy
-filtr(f_pass=1e5, f_stop=3e5, f_center=f_center, title='Docelowy filtr: 96 MHz ±100 kHz')
+filtr(f_pass=1e5, f_stop=3e5, f_center=f_center,N=4, title='Docelowy filtr: 96 MHz ±100 kHz')
