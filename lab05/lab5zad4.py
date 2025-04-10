@@ -73,7 +73,7 @@ else:
     p = np.concatenate([p, np.conj(p)])
     b, a = signal.zpk2tf(z, p, k)
 
-# Wykres zer i biegunów
+# zera bieguny
 plt.figure()
 plt.plot(np.real(z), np.imag(z), 'bo', label='Zeros')
 plt.plot(np.real(p), np.imag(p), 'r*', label='Poles')
@@ -83,7 +83,7 @@ plt.grid(True)
 plt.title('Zera (o) i Bieguny (*)')
 plt.legend()
 
-#
+
 f = np.arange(0, 1000.1, 0.1) # Hz
 w = 2 * np.pi * f #
 s = 1j * w
