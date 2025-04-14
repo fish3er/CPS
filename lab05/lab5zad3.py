@@ -9,20 +9,23 @@ A_stop = 40        # dB
 # zminana na kątowe
 wpass = 2 * np.pi * f_pass
 wstop = 2 * np.pi * f_stop
-
+# N=20
 filters = {}
 
 # Butterworth
 N, Wn = buttord(wpass, wstop, A_pass, A_stop, analog=True)
+
 b, a = butter(N, Wn, btype='low', analog=True)
 filters['Butterworth'] = (b, a)
 
 # Chebyshev I
 N, Wn = cheby1(N=10, rp=A_pass, Wn=wpass, btype='low', analog=True, output='ba')
+
 filters['Chebyshev I'] = (N, Wn)
 
 # Chebyshev II
 N, Wn = cheby2(N=10, rs=A_stop, Wn=wstop, btype='low', analog=True, output='ba')
+
 filters['Chebyshev II'] = (N, Wn)
 
 # Elliptyczny

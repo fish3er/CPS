@@ -11,6 +11,8 @@ num = np.poly(zeros) # miejsca zerowe
 den = np.poly(pos) # bieguny
 
 # num/den
+h = np.polyval(num,10*1j)/np.polyval(den,10*1j)
+num=num/h
 H = sig.TransferFunction(num, den) # dziedzi
 
 
