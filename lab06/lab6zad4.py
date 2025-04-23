@@ -4,7 +4,7 @@ from scipy.io import wavfile
 from scipy.signal import butter, lfilter, freqz, spectrogram, tf2zpk
 from numpy.fft import fft, fftfreq
 
-# === Funkcje pomocnicze ===
+
 
 def plot_fft(signal, fs, title="FFT"):
     N = len(signal)
@@ -85,8 +85,8 @@ engine = engine / np.max(np.abs(engine))
 sing = sing / np.max(np.abs(sing))
 
 # Sumowanie
-combined = engine + sing
-combined = combined / np.max(np.abs(combined))
+summed = engine + sing
+summed = summed / np.max(np.abs(summed))
 
 # === Widma oryginalnych i sumy ===
 plot_fft(engine, fs, "FFT - Mowa")
@@ -95,8 +95,8 @@ plot_spectrogram(engine, fs, "Spektrogram - Mowa")
 plot_fft(sing, fs, "FFT - Ptak")
 plot_spectrogram(sing, fs, "Spektrogram - Ptak")
 
-plot_fft(combined, fs, "FFT - Sygnał zsumowany")
-plot_spectrogram(combined, fs, "Spektrogram - Sygnał zsumowany")
+plot_fft(summed, fs, "FFT - Sygnał zsumowany")
+plot_spectrogram(summed, fs, "Spektrogram - Sygnał zsumowany")
 
 # === Projektowanie filtru IIR ===
 cutoff = 700  # Odcinamy ptoka
@@ -104,7 +104,7 @@ b, a = design_lowpass_filter(cutoff, fs, order=4)
 plot_filter_response(b, a, fs)
 
 # === Filtracja sygnału ===
-filtered = lfilter(b, a, combined)
+filtered = lfilter(b, a, summed)
 
 # === Analiza przefiltrowanego ===
 plot_fft(filtered, fs, "FFT - Po filtrze (mowa)")
