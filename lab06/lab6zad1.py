@@ -21,10 +21,10 @@ fs = 16000  # Hz
 t = np.arange(0, 1, 1/fs)  # 1 sekunda
 
 # === Z -> H(s) -> H(z)
-b_analog, a_analog = signal.zpk2tf(z, p, k)
-b_digital, a_digital = signal.bilinear(b_analog, a_analog, fs)
+b_analog, a_analog = signal.zpk2tf(z, p, k) # analog
+b_digital, a_digital = signal.bilinear(b_analog, a_analog, fs) # digital
 
-# === 1. Charakterystyka amplitudowa filtra analogowego i cyfrowego ===
+# chrakterystyka
 w_analog, h_analog = signal.freqs(b_analog, a_analog, worN=1024)
 w_digital, h_digital = signal.freqz(b_digital, a_digital, worN=1024, fs=fs)
 
@@ -40,11 +40,11 @@ plt.legend()
 plt.grid()
 plt.tight_layout()
 
-# === 2. Sygnał: suma dwóch sinusów ===
+# suma dwóch sinusów
 f1, f2 = 1209, 1272
 x = np.sin(2 * np.pi * f1 * t) + np.sin(2 * np.pi * f2 * t)
 
-# filtera ale ręcznie
+# filtr ale ręcznie
 def custom_filter(b, a, x):
     y = np.zeros_like(x)
     for n in range(len(x)):
