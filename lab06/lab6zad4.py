@@ -74,21 +74,21 @@ assert fs1 == fs2, "Częstotliwości próbkowania muszą być identyczne!"
 fs = fs1
 
 # Mono i wyrównanie długości
-engine = engine if engine.ndim == 1 else engine[:, 0]
+engine = engine if engine.ndim == 1 else engine[:, 0] #ewentuialne stereo do mono
 sing = sing if sing.ndim == 1 else sing[:, 0]
-min_len = min(len(engine), len(sing))
-engine = engine[:min_len]
+min_len = min(len(engine), len(sing)) # wyrównanie długości
+engine = engine[:min_len] #obcięcie
 sing = sing[:min_len]
 
-# Normalizacja
+# Normalizacja ampl
 engine = engine / np.max(np.abs(engine))
 sing = sing / np.max(np.abs(sing))
 
-# Sumowanie
+# sumowany sygnał
 summed = engine + sing
 summed = summed / np.max(np.abs(summed))
 
-# === Widma oryginalnych i sumy ===
+# widma
 plot_fft(engine, fs, "FFT - Mowa")
 plot_spectrogram(engine, fs, "Spektrogram - Mowa")
 
@@ -98,19 +98,19 @@ plot_spectrogram(sing, fs, "Spektrogram - Ptak")
 plot_fft(summed, fs, "FFT - Sygnał zsumowany")
 plot_spectrogram(summed, fs, "Spektrogram - Sygnał zsumowany")
 
-# === Projektowanie filtru IIR ===
+#filtr IIR
 cutoff = 700  # Odcinamy ptoka
 b, a = design_lowpass_filter(cutoff, fs, order=4)
 plot_filter_response(b, a, fs)
 
-# === Filtracja sygnału ===
+# filtracja
 filtered = lfilter(b, a, summed)
 
-# === Analiza przefiltrowanego ===
+#fft plus spektrogram
 plot_fft(filtered, fs, "FFT - Po filtrze (mowa)")
 plot_spectrogram(filtered, fs, "Spektrogram - Po filtrze (mowa)")
 
-# === Zapis do WAV ===
+# zapis do odczytu
 from scipy.io.wavfile import write
 write("filtered_output.wav", fs, (filtered * 32767).astype(np.int16))
 print("Zapisano plik: filtered_output.wav")
