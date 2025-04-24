@@ -86,20 +86,20 @@ sing = sing / np.max(np.abs(sing))
 
 # sumowany sygnał
 summed = engine + sing
-summed = summed / np.max(np.abs(summed))
+summed = summed / np.max(np.abs(summed)) #znowu normalizacja
 
 # widma
-plot_fft(engine, fs, "FFT - Mowa")
-plot_spectrogram(engine, fs, "Spektrogram - Mowa")
+plot_fft(engine, fs, "FFT - Silnik")
+plot_spectrogram(engine, fs, "Spektrogram - Silnik")
 
-plot_fft(sing, fs, "FFT - Ptak")
-plot_spectrogram(sing, fs, "Spektrogram - Ptak")
+plot_fft(sing, fs, "FFT - Śpiew")
+plot_spectrogram(sing, fs, "Spektrogram - Śpiew")
 
 plot_fft(summed, fs, "FFT - Sygnał zsumowany")
 plot_spectrogram(summed, fs, "Spektrogram - Sygnał zsumowany")
 
 #filtr IIR
-cutoff = 700  # Odcinamy ptoka
+cutoff = 500  # Odcinamy śpiew
 b, a = design_lowpass_filter(cutoff, fs, order=4)
 plot_filter_response(b, a, fs)
 
@@ -107,10 +107,10 @@ plot_filter_response(b, a, fs)
 filtered = lfilter(b, a, summed)
 
 #fft plus spektrogram
-plot_fft(filtered, fs, "FFT - Po filtrze (mowa)")
-plot_spectrogram(filtered, fs, "Spektrogram - Po filtrze (mowa)")
+plot_fft(filtered, fs, "FFT - Po filtrze")
+plot_spectrogram(filtered, fs, "Spektrogram - Po filtrze")
 
 # zapis do odczytu
 from scipy.io.wavfile import write
-write("filtered_output.wav", fs, (filtered * 32767).astype(np.int16))
+write("f_output.wav", fs, (filtered * 32767).astype(np.int16))
 print("Zapisano plik: filtered_output.wav")

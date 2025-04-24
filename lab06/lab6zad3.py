@@ -27,12 +27,12 @@ def butter_lowpass(cutoff, fs, order=4):
     nyq = 0.5 * fs
     norm_cutoff = cutoff / nyq
     return butter(order, norm_cutoff, btype='low')
-
+# wyviągnięcie jednej stacji
 b, a = butter_lowpass(bwSERV, fs)
 wideband_signal_filtered = lfilter(b, a, wideband_signal_shifted)
 
-
-x = wideband_signal_filtered[::int(fs / bwSERV)]
+# zmniejszenie czestotliwosci prókowania
+x = wideband_signal_filtered[::int(fs / bwSERV)] #3.2 Mhz do 80kHz
 
 # demodulacja fm
 dx = x[1:] * np.conj(x[:-1])
@@ -43,7 +43,7 @@ b_aa, a_aa = butter_lowpass(bwAUDIO, fs)
 y_filtered = lfilter(b_aa, a_aa, y)
 
 
-ym = y_filtered[::int(bwSERV / bwAUDIO)]
+ym = y_filtered[::int(bwSERV / bwAUDIO)] # 80kHz do 16KHz
 
 # normalizacja
 ym = ym - np.mean(ym)

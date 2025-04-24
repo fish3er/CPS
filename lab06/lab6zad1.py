@@ -23,6 +23,7 @@ t = np.arange(0, 1, 1/fs)  # 1 sekunda
 # === Z -> H(s) -> H(z)
 b_analog, a_analog = signal.zpk2tf(z, p, k) # analog
 b_digital, a_digital = signal.bilinear(b_analog, a_analog, fs) # digital
+#metoda bilinearnej transformacji (metoda Tustina)
 
 # chrakterystyka
 w_analog, h_analog = signal.freqs(b_analog, a_analog, worN=1024)
