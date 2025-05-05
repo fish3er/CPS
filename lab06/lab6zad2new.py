@@ -19,7 +19,6 @@ p = np.array([
     -115.362986120200 - 7546.50707602731j
 ])
 z = np.array([0, 0, 0, 0])
-
 ## 2. Konwersja do postaci cyfrowej przy użyciu transformacji biliniowej
 b, a = bilinear(*zpk2tf(z, p, k), fs=fs)
 
@@ -84,5 +83,3 @@ plt.legend()
 plt.grid(True)
 plt.tight_layout()
 plt.show()
-
-#Pin: 93696

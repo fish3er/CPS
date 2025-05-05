@@ -4,8 +4,6 @@ from scipy.io import wavfile
 from scipy.signal import butter, lfilter, freqz, spectrogram, tf2zpk
 from numpy.fft import fft, fftfreq
 
-
-
 def plot_fft(signal, fs, title="FFT"):
     N = len(signal)
     freqs = fftfreq(N, 1/fs)

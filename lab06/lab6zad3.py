@@ -27,28 +27,42 @@ def butter_lowpass(cutoff, fs, order=4):
     nyq = 0.5 * fs
     norm_cutoff = cutoff / nyq
     return butter(order, norm_cutoff, btype='low')
-# wyviągnięcie jednej stacji
-b, a = butter_lowpass(bwSERV, fs)
-wideband_signal_filtered = lfilter(b, a, wideband_signal_shifted)
 
-# zmniejszenie czestotliwosci prókowania
-x = wideband_signal_filtered[::int(fs / bwSERV)] #3.2 Mhz do 80kHz
+# Wybór stacji do odsłuchu
+def extract_station(signal, station_freq, fs, bw):
+    # Przesunięcie stacji do pasma podstawowego
+    n = np.arange(len(signal))
+    shifted_signal = signal * np.exp(-1j * 2 * np.pi * station_freq / fs * n)
 
-# demodulacja fm
-dx = x[1:] * np.conj(x[:-1])
+    # Filtracja
+    b, a = butter_lowpass(bw, fs)
+    filtered_signal = lfilter(b, a, shifted_signal)
+
+    # Zmniejszenie częstotliwości próbkowania
+    decimated_signal = filtered_signal[::int(fs / bw)]  # zmiana próbkowania na pasmo stacji
+
+    return decimated_signal
+
+# Stacja
+station_freq = 97e6
+station_signal = extract_station(wideband_signal_shifted, station_freq, fs, bwSERV)
+
+# Demodulacja FM
+dx = station_signal[1:] * np.conj(station_signal[:-1])
 y = np.arctan2(np.imag(dx), np.real(dx))
 
-# filtra antyaliasingowy
+# Filtracja audio
 b_aa, a_aa = butter_lowpass(bwAUDIO, fs)
 y_filtered = lfilter(b_aa, a_aa, y)
 
+# Próbkowanie audio
+ym = y_filtered[::int(bwSERV / bwAUDIO)]  # Zmiana próbkowania na pasmo audio
 
-ym = y_filtered[::int(bwSERV / bwAUDIO)] # 80kHz do 16KHz
-
-# normalizacja
+# Normalizacja
 ym = ym - np.mean(ym)
 ym = ym / (1.001 * np.max(np.abs(ym)))
-# zapis do wav
+
+# Zapis do pliku wav
 write("output_fm.wav", int(bwAUDIO), ym.astype(np.float32))
 print("Zapisano plik 'output_fm.wav'")
 
