@@ -4,7 +4,7 @@ import scipy.io.wavfile as wav
 import sounddevice as sd
 
 def resample_signal(x, fs_in, fs_out):
-    """Repróbkowanie sygnału z fs_in do fs_out przy użyciu up/downsampling + filtracji"""
+
     gcd = np.gcd(fs_in, fs_out)
     up = fs_out // gcd
     down = fs_in // gcd
@@ -15,9 +15,9 @@ def resample_signal(x, fs_in, fs_out):
     x_upsampled = np.zeros(len(x) * up)
     x_upsampled[::up] = x
 
-    # Filtr interpolujący (dolnoprzepustowy FIR)
+    # Filtr inter
     nyq_rate = 0.5 * fs_out
-    cutoff = nyq_rate / max(up, down)  # Zabezpieczenie przed aliasingiem
+    cutoff = nyq_rate / max(up, down)  # antyaliasing
     numtaps = 101
     fir_filter = signal.firwin(numtaps, cutoff / nyq_rate)
 

@@ -1,89 +1,97 @@
 import numpy as np
-import scipy.signal as signal
-import scipy.io.wavfile as wav
+import soundfile as sf
 import matplotlib.pyplot as plt
+from scipy.signal import hilbert, resample_poly
 
-# --- Parametry ---
-fs_audio, x = wav.read("mowa8000.wav")  # sygnał audio
-x = x / np.max(np.abs(x))  # normalizacja
-x_rev = x[::-1]  # wersja odwrócona
+# Parametry sygnału
+fs = 400e3           # Częstotliwość próbkowania sygnału radiowego [Hz]
+fc1 = 100e3          # Częstotliwość nośna pierwszej stacji [Hz]
+fc2 = 110e3          # Częstotliwość nośna drugiej stacji [Hz]
+dA = 0.25            # Głębokość modulacji
 
-fs = 400_000  # sygnał radiowy
-fc1 = 100_000  # nośna stacji 1
-fc2 = 110_000  # nośna stacji 2
-d = 0.25       # głębokość modulacji
+# Wczytanie sygnałów mowy
+x1, fsx = sf.read('mowa8000.wav')
+x2 = np.flipud(x1)
 
-# --- Nadpróbkowanie ---
-up_factor = fs // fs_audio
-x_up = signal.resample_poly(x, up_factor, 1)
-x_rev_up = signal.resample_poly(x_rev, up_factor, 1)
-t = np.arange(len(x_up)) / fs
+# Normalizacja
+x1 = x1 / np.max(np.abs(x1)) * dA
+x2 = x2 / np.max(np.abs(x2)) * dA
 
-# --- DSB-C ---
-carrier1 = np.cos(2 * np.pi * fc1 * t)
-carrier2 = np.cos(2 * np.pi * fc2 * t)
-y_dsb_c = (1 + d * x_up) * carrier1 + (1 + d * x_rev_up) * carrier2
+# Nadpróbkowanie
+upsample_factor = int(fs / fsx)
+x1_up = resample_poly(x1, upsample_factor, 1)
+x2_up = resample_poly(x2, upsample_factor, 1)
 
-# --- DSB-SC ---
-y_dsb_sc = d * x_up * carrier1 + d * x_rev_up * carrier2
+# Dopasowanie długości
+N = min(len(x1_up), len(x2_up))
+x1_up = x1_up[:N]
+x2_up = x2_up[:N]
+t = np.arange(N) / fs
 
-# --- Filtr Hilberta FIR ---
-numtaps = 63  # krótszy, stabilniejszy
-# cutoff = [0.01, 0.99]  # jako ułamki Nyquista (0–1)
-hilbert_fir = signal.firwin(numtaps, cutoff=0.99, pass_zero=False, window="hamming")
-x_hilb = signal.lfilter(hilbert_fir, 1.0, x_up)
-x_rev_hilb = signal.lfilter(hilbert_fir, 1.0, x_rev_up)
-x_analytic = x_up + 1j * x_hilb
-x_rev_analytic = x_rev_up + 1j * x_rev_hilb
+# Własna implementacja filtra Hilberta (ręczna aproksymacja)
+M = 100
+n = np.arange(-M, M+1)
+h = np.where(n != 0, (1 - np.cos(np.pi * n)) / (np.pi * n), 0)
 
-# --- SSB-SC ---
-y_ssb_sc_upper = np.real(x_analytic * np.exp(1j * 2 * np.pi * fc1 * t))  # prawa strona
-y_ssb_sc_lower = np.real(x_rev_analytic * np.exp(1j * 2 * np.pi * fc2 * t))  # lewa strona
-y_ssb = y_ssb_sc_upper + y_ssb_sc_lower
+# Filtracja Hilberta
+x1h = np.convolve(x1_up, h, mode='same')
+x2h = np.convolve(x2_up, h, mode='same')
 
-# --- Wykresy: sygnał audio i po modulacji ---
-def plot_fft(signal, fs, title):
+# Modulacja
+
+# 1. DSB-C
+y_DSB_C = (1 + x1_up) * np.cos(2*np.pi*fc1*t) + (1 + x2_up) * np.cos(2*np.pi*fc2*t)
+
+# 2. DSB-SC
+y_DSB_SC = x1_up * np.cos(2*np.pi*fc1*t) + x2_up * np.cos(2*np.pi*fc2*t)
+
+# 3. SSB-SC
+y_SSB_SC = 0.5 * x1_up * np.cos(2*np.pi*fc1*t) - 0.5 * x1h * np.sin(2*np.pi*fc1*t) + \
+           0.5 * x2_up * np.cos(2*np.pi*fc2*t) + 0.5 * x2h * np.sin(2*np.pi*fc2*t)
+
+# Funkcja do wykresu widma
+def plot_spectrum(signal, fs, title):
     N = len(signal)
-    freqs = np.fft.fftfreq(N, 1/fs)
-    spectrum = np.fft.fft(signal)
-    plt.plot(freqs[:N//2], 20*np.log10(np.abs(spectrum[:N//2])+1e-10))
+    f = np.linspace(0, fs, N, endpoint=False)
+    spectrum = np.abs(np.fft.fft(signal)) / N
+    plt.plot(f[:N//2], spectrum[:N//2])
     plt.title(title)
     plt.xlabel("Częstotliwość [Hz]")
-    plt.ylabel("Amplituda [dB]")
-    plt.grid(True)
+    plt.ylabel("Amplituda")
+    plt.grid()
 
-plt.figure(figsize=(14, 10))
+# Wykresy
+plt.figure(figsize=(12, 10))
 
-# --- Wejściowy sygnał audio (po upsamplingu) ---
+# DSB-C
 plt.subplot(3, 2, 1)
-plt.plot(t[:1000], x_up[:1000])
-plt.title("x(t) po nadpróbkowaniu")
+plt.plot(t[:1000], y_DSB_C[:1000])
+plt.title("DSB-C w dziedzinie czasu")
 plt.xlabel("Czas [s]")
-plt.grid(True)
+plt.ylabel("Amplituda")
 
 plt.subplot(3, 2, 2)
-plot_fft(x_up, fs, "Widmo sygnału audio x(t)")
+plot_spectrum(y_DSB_C, fs, "Widmo DSB-C")
 
-# --- DSB-C ---
+# DSB-SC
 plt.subplot(3, 2, 3)
-plt.plot(t[:1000], y_dsb_c[:1000])
-plt.title("DSB-C – sygnał w dziedzinie czasu")
+plt.plot(t[:1000], y_DSB_SC[:1000])
+plt.title("DSB-SC w dziedzinie czasu")
 plt.xlabel("Czas [s]")
-plt.grid(True)
+plt.ylabel("Amplituda")
 
 plt.subplot(3, 2, 4)
-plot_fft(y_dsb_c, fs, "DSB-C – widmo")
+plot_spectrum(y_DSB_SC, fs, "Widmo DSB-SC")
 
-# --- SSB-SC ---
+# SSB-SC
 plt.subplot(3, 2, 5)
-plt.plot(t[:1000], y_ssb[:1000])
-plt.title("SSB-SC – sygnał w dziedzinie czasu")
+plt.plot(t[:1000], y_SSB_SC[:1000])
+plt.title("SSB-SC w dziedzinie czasu")
 plt.xlabel("Czas [s]")
-plt.grid(True)
+plt.ylabel("Amplituda")
 
 plt.subplot(3, 2, 6)
-plot_fft(y_ssb, fs, "SSB-SC – widmo")
+plot_spectrum(y_SSB_SC, fs, "Widmo SSB-SC")
 
 plt.tight_layout()
 plt.show()
-
