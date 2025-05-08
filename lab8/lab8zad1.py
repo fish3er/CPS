@@ -17,16 +17,16 @@ M = 50               # połowa rzędu filtru
 N = 2 * M + 1        # rząd filtru
 n = np.arange(-M, M + 1)
 
-# Ręczna definicja filtru Hilberta z oknem (raised cosine window)
+# Ręczna definicja filtru Hilberta
 h = (1 - np.cos(np.pi * n)) / (np.pi * n)
-h[M] = 0  # nadpisanie wartości w n=0
+h[M] = 0
 
-# Konwolucja (pełna)
+# Konwolucja
 xh_full = np.convolve(x, h, mode='full')
 
 # Synchronizacja wejścia i wyjścia filtra
 Nx = len(x)
-x_sync = x[M:Nx - M]                       # ucięcie brzegów
+x_sync = x[M:Nx - M]                       # obcięcie brzegów
 xh_sync = xh_full[2 * M : 2 * M + len(x_sync)]  # wyrównanie opóźnienia
 
 # Sygnał analityczny i obwiednia

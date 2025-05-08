@@ -9,8 +9,6 @@ def resample_signal(x, fs_in, fs_out):
     up = fs_out // gcd
     down = fs_in // gcd
 
-    print(f"Upsampling by {up}, Downsampling by {down}")
-
     # Nadpróbkowanie
     x_upsampled = np.zeros(len(x) * up)
     x_upsampled[::up] = x
@@ -33,7 +31,7 @@ def resample_signal(x, fs_in, fs_out):
 fs1, x1 = wav.read("x1.wav")
 fs2, x2 = wav.read("x2.wav")
 
-# Zamień na float w zakresie [-1, 1] jeśli dane są w int16
+# Zamień na float w zakresie [-1, 1]
 if x1.dtype != np.float32:
     x1 = x1.astype(np.float32) / np.max(np.abs(x1))
 if x2.dtype != np.float32:
@@ -53,14 +51,14 @@ min_len = min(len(x1_resampled), len(x2_resampled))
 x1_resampled = x1_resampled[:min_len]
 x2_resampled = x2_resampled[:min_len]
 
-# Miksowanie (sumowanie z normalizacją)
+# sumowanie + normalizacja
 x4 = x1_resampled + x2_resampled
-x4 = x4 / np.max(np.abs(x4))  # Normalizacja
+x4 = x4 / np.max(np.abs(x4))
 
-# Zapisz do pliku WAV
+# zapisz
 wav.write("x4.wav", fs_target, (x4 * 32767).astype(np.int16))
 
-# Odtwarzanie do odsłuchu
+# Odtwarzanie
 print("Odtwarzanie zmiksowanego sygnału...")
 sd.play(x4, fs_target)
 sd.wait()
